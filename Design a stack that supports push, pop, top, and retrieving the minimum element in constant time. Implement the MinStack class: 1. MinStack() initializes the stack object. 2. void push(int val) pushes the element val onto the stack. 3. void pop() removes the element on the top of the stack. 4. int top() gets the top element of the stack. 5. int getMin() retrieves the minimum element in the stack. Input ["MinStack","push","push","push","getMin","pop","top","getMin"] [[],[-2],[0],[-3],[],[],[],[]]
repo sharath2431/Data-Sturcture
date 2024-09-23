@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define MAX 100
+struct MinStack {
+    int items[MAX];    
+    int minItems[MAX]; 
+    int top;           
+};
+struct MinStack* createMinStack() {
+    struct MinStack* stack = (struct MinStack*)malloc(sizeof(struct MinStack));
+    stack->top = -1; 
+    return stack;
+}
+void push(struct MinStack* stack, int val) {
+    if (stack->top == MAX - 1) {
+        printf("Stack overflow. Cannot push %d\n", val);
+        return;
+    }
+    stack->items[++stack->top] = val; 
+    if (stack->top == 0 || val < stack->minItems[stack->top - 1]) {
+        stack->minItems[stack->top] = val; 
+    } else {
+        stack->minItems[stack->top] = stack->minItems[stack->top - 1]; 
+    }
+}
+void pop(struct MinStack* stack) {
+    if (stack->top == -1) {
+        printf("Stack is empty. Cannot pop.\n");
+        return;
+    }
+    stack->top--; 
+}
+int top(struct MinStack* stack) {
+    if (stack->top == -1) {
+        printf("Stack is empty. Cannot get top.\n");
+        return -1; 
+    }
+    return stack->items[stack->top]; 
+}
+int getMin(struct MinStack* stack) {
+    if (stack->top == -1) {
+        printf("Stack is empty. Cannot get minimum.\n");
+        return -1;
+    }
+    return stack->minItems[stack->top]; 
+}
+int main() {
+    struct MinStack* minStack = createMinStack();
+    push(minStack, -2);
+    push(minStack, 0);
+    push(minStack, -3);
+    printf("Minimum: %d\n", getMin(minStack));
+    pop(minStack);
+    printf("Top: %d\n", top(minStack));         
+    printf("Minimum: %d\n", getMin(minStack)); 
+    free(minStack);
+}
