@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+struct StackNode {
+    int val;
+    struct StackNode* next;
+};
+struct Stack {
+    struct StackNode* top;
+};
+struct Stack* createStack() {
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top = NULL;
+    return stack;
+}
+void push(struct Stack* stack, int x) {
+    struct StackNode* newNode = (struct StackNode*)malloc(sizeof(struct StackNode));
+    newNode->val = x;
+    newNode->next = stack->top;
+    stack->top = newNode;
+}
+int pop(struct Stack* stack) {
+    if (stack->top == NULL) {
+        return -1; 
+    }
+    struct StackNode* temp = stack->top;
+    int poppedValue = temp->val;
+    stack->top = stack->top->next;
+    free(temp);
+    return poppedValue;
+}
+bool isEmpty(struct Stack* stack) {
+    return stack->top == NULL;
+}
+struct MyQueue {
+    struct Stack* stack1;
+    struct Stack* stack2;
+};
+struct MyQueue* createMyQueue() {
+    struct MyQueue* queue = (struct MyQueue*)malloc(sizeof(struct MyQueue));
+    queue->stack1 = createStack();
+    queue->stack2 = createStack();
+    return queue;
+}
+void myQueuePush(struct MyQueue* queue, int x) {
+    push(queue->stack1, x);
+}
+int myQueuePop(struct MyQueue* queue) {
+    if (isEmpty(queue->stack2)) {
+        while (!isEmpty(queue->stack1)) {
+            push(queue->stack2, pop(queue->stack1));
+        }
+    }
+    return pop(queue->stack2);
+}
+int myQueuePeek(struct MyQueue* queue) {
+    if (isEmpty(queue->stack2)) {
+        while (!isEmpty(queue->stack1)) {
+            push(queue->stack2, pop(queue->stack1));
+        }
+    }
+    return queue->stack2->top->val; 
+}
+bool myQueueEmpty(struct MyQueue* queue) {
+    return isEmpty(queue->stack1) && isEmpty(queue->stack2);
+}
+int main() {
+    struct MyQueue* myQueue = createMyQueue();
+    myQueuePush(myQueue, 1);
+    myQueuePush(myQueue, 2);
+    printf("Peek: %d\n", myQueuePeek(myQueue)); 
+    printf("Pop: %d\n", myQueuePop(myQueue));   
+    printf("Empty: %d\n", myQueueEmpty(myQueue));
+    return 0;
+}
