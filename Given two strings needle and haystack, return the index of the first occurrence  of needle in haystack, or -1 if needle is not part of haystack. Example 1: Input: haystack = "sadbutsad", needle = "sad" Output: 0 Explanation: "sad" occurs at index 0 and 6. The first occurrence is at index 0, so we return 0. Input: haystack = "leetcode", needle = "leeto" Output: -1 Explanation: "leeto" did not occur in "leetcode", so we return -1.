@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <string.h>
+int strStr(char *haystack, char *needle) {
+    if (*needle == '\0') {
+        return 0; 
+    }
+    int haystackLen = strlen(haystack);
+    int needleLen = strlen(needle);
+    for (int i = 0; i <= haystackLen - needleLen; i++) {
+        if (strncmp(&haystack[i], needle, needleLen) == 0) {
+            return i; 
+        }
+    }
+
+    return -1; 
+}
+int main() {
+    char haystack1[] = "sadbutsad";
+    char needle1[] = "sad";
+    printf("Output: %d\n", strStr(haystack1, needle1)); 
+
+    char haystack2[] = "leetcode";
+    char needle2[] = "leeto";
+    printf("Output: %d\n", strStr(haystack2, needle2));
+    return 0;
+}
