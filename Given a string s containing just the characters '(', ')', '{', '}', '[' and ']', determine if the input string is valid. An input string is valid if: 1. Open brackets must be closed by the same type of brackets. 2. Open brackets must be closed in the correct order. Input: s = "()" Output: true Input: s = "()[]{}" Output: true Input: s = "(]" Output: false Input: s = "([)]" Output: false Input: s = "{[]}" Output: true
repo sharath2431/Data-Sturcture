@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MAX 100
+struct Stack {
+    char items[MAX];
+    int top;
+};
+struct Stack* createStack() {
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top = -1;
+    return stack;
+}
+bool isEmpty(struct Stack* stack) {
+    return stack->top == -1;
+}
+void push(struct Stack* stack, char value) {
+    if (stack->top < MAX - 1) {
+        stack->items[++stack->top] = value;
+    }
+}
+char pop(struct Stack* stack) {
+    if (!isEmpty(stack)) {
+        return stack->items[stack->top--];
+    }
+    return '\0'; 
+}
+bool isValid(char* s) {
+    struct Stack* stack = createStack();
+    
+    for (int i = 0; s[i] != '\0'; i++) {
+        char current = s[i];
+        if (current == '(' || current == '{' || current == '[') {
+            push(stack, current);
+        } 
+        else if (current == ')' || current == '}' || current == ']') {
+            if (isEmpty(stack)) {
+                free(stack);
+                return false; 
+            }
+            char topChar = pop(stack);
+            if ((current == ')' && topChar != '(') ||
+                (current == '}' && topChar != '{') ||
+                (current == ']' && topChar != '[')) {
+                free(stack);
+                return false; 
+            }
+        }
+    }
+        bool valid = isEmpty(stack);
+    free(stack);
+    return valid;
+}
+int main() {
+    char* input1 = "()";
+    char* input2 = "()[]{}";
+    char* input3 = "(]";
+    char* input4 = "([)]";
+    char* input5 = "{[]}";
+    printf("Input: %s, Output: %s\n", input1, isValid(input1) ? "true" : "false");
+    printf("Input: %s, Output: %s\n", input2, isValid(input2) ? "true" : "false");
+    printf("Input: %s, Output: %s\n", input3, isValid(input3) ? "true" : "false");
+    printf("Input: %s, Output: %s\n", input4, isValid(input4) ? "true" : "false");
+    printf("Input: %s, Output: %s\n", input5, isValid(input5) ? "true" : "false");
+    return 0;
+}
